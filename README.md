@@ -99,8 +99,70 @@ Business Flow Summary
    - Listener sends confirmation email to provider
 
 ******************************************************
+1.API Authentication Setup (Laravel Sanctum)
+composer require laravel/sanctum
+🔧 Installation Steps
 
-API Endpoint: Create Order
+Install Sanctum
+
+composer require laravel/sanctum
+
+
+Publish the Sanctum configuration and migration files
+
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+
+Run database migrations
+
+php artisan migrate
+
+
+Add Sanctum’s trait to your User model
+
+Open app/Models/User.php and add:
+
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+}
+
+
+Add Sanctum middleware
+
+Open bootstrap/app.php and update the api middleware group:
+
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->group('api', [
+        EnsureFrontendRequestsAreStateful::class,
+        'throttle:api',
+        SubstituteBindings::class,
+    ]);
+})
+
+
+Clear caches
+
+php artisan optimize:clear
+
+
+Test token generation
+
+Use the /api/login endpoint.
+If successful, it will return a JSON response similar to:
+
+{
+  "message": "Login successful",
+  "token": "1|longGeneratedSanctumTokenHere"
+}
+
+![alt text](image-7.png)
+2.API Endpoint: Create Order
 
 POST/api/orders
 
@@ -163,7 +225,7 @@ Response
         }
     }
 }
-
+![alt text](image-8.png)
 ******************************************************
 Authorization (Policies)
 Authorization (Provider-Only Access)
