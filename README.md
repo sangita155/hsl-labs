@@ -66,7 +66,7 @@ Finally, clear & cache configuration:
 
 php artisan config:clear
 php artisan config:cache
-
+php artisan serve 
 
 | Table | Purpose |
 |-------|---------|
@@ -100,22 +100,22 @@ Business Flow Summary
 
 ******************************************************
 1.API Authentication Setup (Laravel Sanctum)
-composer require laravel/sanctum
-🔧 Installation Steps
+  composer require laravel/sanctum
+  Installation Steps
 
-Install Sanctum
+  Install Sanctum
 
-composer require laravel/sanctum
-
-
-Publish the Sanctum configuration and migration files
-
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+   require laravel/sanctum
 
 
-Run database migrations
+  Publish the Sanctum configuration and migration files
 
-php artisan migrate
+  php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+
+  Run database migrations
+
+  php artisan migrate
 
 
 Add Sanctum’s trait to your User model
@@ -266,74 +266,9 @@ Run all tests:
 php artisan test
 
 ![alt text](image-6.png)
-
- Continuous Integration (GitHub Actions)
-
-This project includes automated tests that run on every push and pull request.
-
-Setup
-
-Create the workflow file:
-
- What it does
-
-- Uses PHP 8.2
-- Installs Composer dependencies
-- Sets up SQLite in-memory test database
-- Runs `php artisan test`
-
-This ensures that the codebase stays stable and every commit is tested automatically.
-
-name: Run Tests
-
-on:
-  push:
-  pull_request:
-
-jobs:
-  tests:
-    runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: hsl_labs_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=5s
-          --health-timeout=5s
-          --health-retries=10
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: pdo_mysql
-          coverage: none
-
-      - name: Install Dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
-
 Ordering more than available stock triggers validation error
 ![alt text](image-5.png)
 ![alt text](image-3.png)
 ![alt text](image-4.png)
-Utility Commands
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
 
-      - name: Run migrations
-        run: php artisan migrate --no-interaction --force
-
-      - name: Run Tests
-        run: php artisan test
 
